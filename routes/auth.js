@@ -53,12 +53,9 @@ router.post("/register", async (req, res) => {
         return res.json({status:2, message: "database error" });
     }
     res.cookie("auth", req.body.email, { signed: true, maxAge: 1000 * 60 * 60 * 48 });
-    let userObj = {  
-        email: req.body.email,
-        fname : req.body.fname,
-        phone : req.body.phone
-    }
       return res.json({status:1, message: "success",data:{...user._doc} });
 })
+
+
 
 module.exports = router;

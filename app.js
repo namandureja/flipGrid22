@@ -15,6 +15,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
 app.use('/api/auth', require('./routes/auth.js'));
+app.use('/api/', require('./routes/uploadData.js'));
 
 if (!process.env.PORT) process.env.PORT = 4000;
 callBack(() => {

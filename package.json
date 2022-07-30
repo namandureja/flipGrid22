@@ -20,6 +20,7 @@
     "express": "^4.17.2",
     "i": "^0.3.7",
     "mongoose": "^6.1.5",
+    "multer": "^1.4.5-lts.1",
     "npm": "^8.3.0"
   },
   "devDependencies": {

@@ -1,6 +1,7 @@
 const User = require("../models/User");
 
 const isLoggedIn = async (req, res, next) => {
+    console.log(req.cookies,req.signedCookies)
     if (!req.signedCookies.auth) return res.json({
         status: 0
     });
