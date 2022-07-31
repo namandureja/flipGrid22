@@ -3,14 +3,17 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const { callBack } = require('./db');
 var cors = require('cors')
+var fileupload = require("express-fileupload");
 
 require('dotenv').config();
 
 const app = express();
-app.use(bodyParser.json());
+app.use(bodyParser.json()); 
+app.use(fileupload());
+
 app.use(cors())
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
 
