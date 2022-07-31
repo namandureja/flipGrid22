@@ -8,10 +8,6 @@ var productSchema = new mongoose.Schema({
     warranty: Number,
     isSoulbound: Boolean,
     image: String,
-    resale: {
-        type: Boolean,
-        default: false
-    }
 });
 
 module.exports = new mongoose.model("Product", productSchema);
