@@ -17,7 +17,7 @@ router.post("/upload/product", async (req, res) => {
     let product = new Product({
         _id: req.body.itemId,
         name: req.body.name,
-        features: req.body.features,
+        features: req.body.features.split(","),
         price: req.body.price,
         warranty: req.body.warranty,
         isSoulbound: req.body.isSoulbound,
