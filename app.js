@@ -3,11 +3,13 @@ const fileUpload = require("express-fileupload");
 const bodyParser = require("body-parser");
 const { connectToDB } = require("./db");
 const contractInfo = require("./FlipkartItem.json");
-const contractAddress = require("./localhost.json");
+const contractAddress = require("./polygontest.json");
 const { ethers } = require("ethers");
 const Purchased = require("./models/Purchased");
+const Product = require("./models/Product");
 
 var cors = require("cors");
+const User = require("./models/User");
 
 require("dotenv").config();
 
@@ -31,16 +33,26 @@ connectToDB(() => {
     const contract = new ethers.Contract(
         contractAddress.address,
         contractInfo.abi,
-        ethers.getDefaultProvider("http://localhost:8545")
+        ethers.getDefaultProvider("https://rpc-mumbai.maticvigil.com/")
     );
 
+    const sendSms = (text, number) => {};
+
     contract.on("Transfer", async (...args) => {
+        console.log(args);
         let prod = await Purchased.findOne({ _id: args[2].toNumber() });
+        const item = await Product.findOne({ _id: args[2] % 1000 });
+        let user = await User.findOne({ address: args[1] });
+        user = { phone: 42 };
+        console.log(user);
+        console.log(item);
         if (!prod) {
             if (args[0] == "0x0000000000000000000000000000000000000000") {
                 console.log("New product purchased by", args[1]);
-            } else {
-                console.log("Resale product purchased by", args[1]);
+                sendSms(
+                    `We congratulate you on the purchase of a new ${item.name}. You can view this transaction in polygonscan at https://mumbai.polygonscan.com/tx/${args[3].transactionHash}`,
+                    user.phone
+                );
             }
             prod = new Purchased({
                 _id: args[2],
@@ -48,8 +60,13 @@ connectToDB(() => {
             });
             prod.save();
         } else {
+            console.log("Resale product purchased by", args[1]);
             prod.owner = args[1];
             prod.isResale = false;
+            sendSms(
+                `We congratulate you on the purchase of a resold ${item.name}. You can view this transaction in polygonscan at https://mumbai.polygonscan.com/tx/${args[3].transactionHash}`,
+                user.phone
+            );
             prod.save();
         }
     });
